@@ -22,4 +22,8 @@ public enum Currency {
         return null;
     }
 
+    public String getText() {
+        return this.text;
+    }
+
 }

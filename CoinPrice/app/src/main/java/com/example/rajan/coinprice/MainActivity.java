@@ -4,8 +4,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rajan.coinprice.Model.Currency;
 import com.example.rajan.coinprice.Model.Prices;
@@ -25,14 +31,46 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String KOINEX_API_TICKER = "https://koinex.in/api/ticker";
     private static final String TAG = "MainActivity";
-    private TextView resultTextView;
+    private TextView mResultTextView;
+    private RecyclerView mRecyclerView;
+    private String[] mPriceData;
+    private Button mRefreshButton;
+    private ProgressBar mLoadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        resultTextView = (TextView) findViewById(R.id.result_textview);
+        mResultTextView = (TextView) findViewById(R.id.result_textview);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coinprice);
+        mRefreshButton = (Button) findViewById(R.id.refresh_action);
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+
+        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new NetworkCall().execute(buildUrl());
+            }
+        });
+
+        mPriceData = new String[1];
+        mPriceData[0] = "Empty Data";
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        CurrencyPriceAdapter adapter = new CurrencyPriceAdapter();
+
+        adapter.setPriceData(mPriceData);
+
+        mRecyclerView.setAdapter(adapter);
+
+        mRecyclerView.setLayoutManager(layoutManager);
+
+        mRecyclerView.setHasFixedSize(false);
+
         new NetworkCall().execute(buildUrl());
+
+
     }
 
     private static URL buildUrl() {
@@ -90,6 +128,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            showLoading();
+            super.onPreExecute();
+        }
+
+        @Override
         protected void onPostExecute(String s) {
             if (s != null) {
                 try {
@@ -97,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
                     Iterator<?> keys = pricesObject.keys();
                     StringBuilder sb = new StringBuilder();
                     Prices currentValue = new Prices();
+                    mPriceData = new String[pricesObject.length()];
+                    int i = 0;
                     while (keys.hasNext()) {
                         String key = keys.next().toString();
                         Object valueObject = pricesObject.get(key);
@@ -104,37 +150,76 @@ public class MainActivity extends AppCompatActivity {
                         switch (currency) {
                             case BITCOIN:
                                 currentValue.setBtc(new Double(valueObject.toString()));
+                                mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getBtc();
                                 break;
                             case BITCOINCASH:
                                 currentValue.setBch(new Double(valueObject.toString()));
+                                mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getBch();
                                 break;
                             case ETHERIUM:
                                 currentValue.setEth(new Double(valueObject.toString()));
+                                mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getEth();
                                 break;
                             case RIPPLE:
                                 currentValue.setXrp(new Double(valueObject.toString()));
+                                mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getXrp();
                                 break;
                             case LITECOIN:
                                 currentValue.setLtc(new Double(valueObject.toString()));
+                                mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getLtc();
                                 break;
                             case MIOTA:
                                 currentValue.setMiota((Double) valueObject);
+                                mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getMiota();
                                 break;
                             case OMG:
                                 currentValue.setOmg((Double) valueObject);
+                                mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getOmg();
                                 break;
                             case GNT:
                                 currentValue.setGnt((Double) valueObject);
+                                mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getGnt();
                                 break;
                         }
+                        i++;
                     }
-                    resultTextView.setText(currentValue.toString());
+                    CurrencyPriceAdapter adapter = new CurrencyPriceAdapter();
+                    adapter.setPriceData(mPriceData);
+                    mRecyclerView.swapAdapter(adapter, true);
+                    mResultTextView.setText(currentValue.toString());
+                    Toast.makeText(getApplicationContext(), "Request Successfull...", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.d(TAG, "Some problem in Json parsing");
+                    mPriceData = new String[1];
+                    mPriceData[0] = "Empty Data";
+                    CurrencyPriceAdapter adapter = new CurrencyPriceAdapter();
+                    adapter.setPriceData(mPriceData);
+                    mRecyclerView.swapAdapter(adapter, true);
+                    Toast.makeText(getApplicationContext(), "Error in Parsing data...", Toast.LENGTH_SHORT).show();
                 }
-            } else
-                resultTextView.setText("Error in request...");
+            } else {
+                mPriceData = new String[1];
+                mPriceData[0] = "Empty Data";
+                CurrencyPriceAdapter adapter = new CurrencyPriceAdapter();
+                adapter.setPriceData(mPriceData);
+                mRecyclerView.swapAdapter(adapter, true);
+                Toast.makeText(getApplicationContext(), "Error in request...", Toast.LENGTH_SHORT).show();
+                mResultTextView.setText("Error in request...");
+            }
+            hideLoading();
         }
+    }
+
+    private void showLoading() {
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        mRefreshButton.setEnabled(false);
+    }
+
+    private void hideLoading() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        mRefreshButton.setEnabled(true);
     }
 }
