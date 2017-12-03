@@ -7,15 +7,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.rajan.coinprice.Model.Currency;
+import com.example.rajan.coinprice.Model.Prices;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         resultTextView = (TextView) findViewById(R.id.result_textview);
         new NetworkCall().execute(buildUrl());
-
     }
 
     private static URL buildUrl() {
@@ -88,9 +91,49 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            if (s != null)
-                resultTextView.setText(s);
-            else
+            if (s != null) {
+                try {
+                    JSONObject pricesObject = new JSONObject(s).getJSONObject("prices");
+                    Iterator<?> keys = pricesObject.keys();
+                    StringBuilder sb = new StringBuilder();
+                    Prices currentValue = new Prices();
+                    while (keys.hasNext()) {
+                        String key = keys.next().toString();
+                        Object valueObject = pricesObject.get(key);
+                        Currency currency = Currency.fromString(key);
+                        switch (currency) {
+                            case BITCOIN:
+                                currentValue.setBtc(new Double(valueObject.toString()));
+                                break;
+                            case BITCOINCASH:
+                                currentValue.setBch(new Double(valueObject.toString()));
+                                break;
+                            case ETHERIUM:
+                                currentValue.setEth(new Double(valueObject.toString()));
+                                break;
+                            case RIPPLE:
+                                currentValue.setXrp(new Double(valueObject.toString()));
+                                break;
+                            case LITECOIN:
+                                currentValue.setLtc(new Double(valueObject.toString()));
+                                break;
+                            case MIOTA:
+                                currentValue.setMiota((Double) valueObject);
+                                break;
+                            case OMG:
+                                currentValue.setOmg((Double) valueObject);
+                                break;
+                            case GNT:
+                                currentValue.setGnt((Double) valueObject);
+                                break;
+                        }
+                    }
+                    resultTextView.setText(currentValue.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "Some problem in Json parsing");
+                }
+            } else
                 resultTextView.setText("Error in request...");
         }
     }
