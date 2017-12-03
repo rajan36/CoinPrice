@@ -1,5 +1,8 @@
 package com.example.rajan.coinprice;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +52,10 @@ public class MainActivity extends AppCompatActivity {
         mRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new NetworkCall().execute(buildUrl());
+                if (isNetworkAvailable())
+                    new NetworkCall().execute(buildUrl());
+                else
+                    Toast.makeText(getApplicationContext(), "Unable to get data, No Internet Connection...", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -68,7 +74,10 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setHasFixedSize(false);
 
-        new NetworkCall().execute(buildUrl());
+        if (isNetworkAvailable())
+            new NetworkCall().execute(buildUrl());
+        else
+            Toast.makeText(getApplicationContext(), "Unable to get data, No Internet Connection...", Toast.LENGTH_SHORT).show();
 
 
     }
@@ -106,11 +115,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class NetworkCall extends AsyncTask<URL, String, String> {
+    private class NetworkCall extends AsyncTask<URL, String, String> {
 
         @Override
         protected String doInBackground(URL... params) {
-            URL koinexURL = null;
+            URL koinexURL;
             if (params.length == 0) {
                 return null;
             }
@@ -147,25 +156,28 @@ public class MainActivity extends AppCompatActivity {
                         String key = keys.next().toString();
                         Object valueObject = pricesObject.get(key);
                         Currency currency = Currency.fromString(key);
+                        if (currency == null) {
+                            continue;
+                        }
                         switch (currency) {
                             case BITCOIN:
-                                currentValue.setBtc(new Double(valueObject.toString()));
+                                currentValue.setBtc(Double.valueOf(valueObject.toString()));
                                 mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getBtc();
                                 break;
                             case BITCOINCASH:
-                                currentValue.setBch(new Double(valueObject.toString()));
+                                currentValue.setBch(Double.valueOf(valueObject.toString()));
                                 mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getBch();
                                 break;
                             case ETHERIUM:
-                                currentValue.setEth(new Double(valueObject.toString()));
+                                currentValue.setEth(Double.valueOf(valueObject.toString()));
                                 mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getEth();
                                 break;
                             case RIPPLE:
-                                currentValue.setXrp(new Double(valueObject.toString()));
+                                currentValue.setXrp(Double.valueOf(valueObject.toString()));
                                 mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getXrp();
                                 break;
                             case LITECOIN:
-                                currentValue.setLtc(new Double(valueObject.toString()));
+                                currentValue.setLtc(Double.valueOf(valueObject.toString()));
                                 mPriceData[i] = "" + currency.name() + " (" + currency.getText() + ") : " + currentValue.getLtc();
                                 break;
                             case MIOTA:
@@ -221,5 +233,12 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setVisibility(View.VISIBLE);
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mRefreshButton.setEnabled(true);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
