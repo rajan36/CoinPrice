@@ -29,3 +29,5 @@ This project is about making an android application which will help in quickly g
 * Goals<br/>
    - Call api at every 10 minutes in background<br/>
    - Store api results in sql db <br/>
+* Updates <br/>
+    - This will take time.... Sleepy
