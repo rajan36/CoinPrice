@@ -25,3 +25,7 @@ This project is about making an android application which will help in quickly g
 * Achievements<br />
    - Git Repo Up and Running<br />
    - Developed First Page to get Prices data with use of Recycler view<br />
+   #### Day 2, 4 December 2017 10:43 PM<br />
+* Goals<br/>
+   - Call api at every 10 minutes in background<br/>
+   - Store api results in sql db <br/>
