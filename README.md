@@ -31,3 +31,6 @@ This project is about making an android application which will help in quickly g
    - Store api results in sql db <br/>
 * Updates <br/>
     - This will take time.... Sleepy
+   #### Day 3, 5 December 2017 9:41 PM<br />
+* Goals<br/>
+   - Yesterday's Goals... <br/>
