@@ -6,6 +6,8 @@ package com.example.rajan.coinprice.Model;
 
 public class Prices {
 
+    private Integer id;
+
     private Double btc;
 
     private Double bch;
@@ -21,6 +23,16 @@ public class Prices {
     private Double omg;
 
     private Double gnt;
+
+    private String timestamp;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Double getBtc() {
         return btc;
@@ -86,10 +98,19 @@ public class Prices {
         this.gnt = gnt;
     }
 
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
     @Override
     public String toString() {
         return "Prices{" +
-                "btc=" + btc +
+                "id=" + id +
+                ", btc=" + btc +
                 ", bch=" + bch +
                 ", eth=" + eth +
                 ", xrp=" + xrp +
@@ -97,6 +118,7 @@ public class Prices {
                 ", miota=" + miota +
                 ", omg=" + omg +
                 ", gnt=" + gnt +
+                ", timestamp='" + timestamp + '\'' +
                 '}';
     }
 }
