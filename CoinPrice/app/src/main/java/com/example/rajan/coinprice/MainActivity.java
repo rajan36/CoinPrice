@@ -80,8 +80,14 @@ public class MainActivity extends AppCompatActivity {
                 if (isNetworkAvailable()) {
                     showLoading();
                     volleyCall();
-                } else
+                } else {
+                    mPriceData = new String[1];
+                    mPriceData[0] = "Empty Data";
+                    CurrencyPriceAdapter adapter = new CurrencyPriceAdapter();
+                    adapter.setPriceData(mPriceData);
+                    mRecyclerView.swapAdapter(adapter, true);
                     Toast.makeText(getApplicationContext(), "Unable to get data, No Internet Connection...", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
