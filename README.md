@@ -25,12 +25,17 @@ This project is about making an android application which will help in quickly g
 * Achievements<br />
    - Git Repo Up and Running<br />
    - Developed First Page to get Prices data with use of Recycler view<br />
-   #### Day 2, 4 December 2017 10:43 PM<br />
+ #### Day 2, 4 December 2017 10:43 PM<br />
 * Goals<br/>
    - Call api at every 10 minutes in background<br/>
    - Store api results in sql db <br/>
 * Updates <br/>
     - This will take time.... Sleepy
-   #### Day 3, 5 December 2017 9:41 PM<br />
+ #### Day 3, 5 December 2017 9:41 PM<br />
 * Goals<br/>
    - Yesterday's Goals... <br/>
+* Updates </br>
+    - Nothing accomplished
+ #### Day 4, 10 December 2017 10:56 PM<br />
+* Goals<br/>
+    - Add support for coinmarketcap api
