@@ -39,7 +39,10 @@ This project is about making an android application which will help in quickly g
  #### Day 4, 10 December 2017 10:56 PM<br />
 * Goals<br/>
     - Add support for coinmarketcap api
-* Updates<bt/>
+* Updates<br/>
     - Added support for coinmarketcap api
     - Used Gson for parsing and Volley for requesting
     - Still to remove unnecessary code
+ #### Day 5, 11 December 2017 9:58 PM<br />
+ * Goals<br/>
+    - Run Background Service
