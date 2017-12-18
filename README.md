@@ -52,3 +52,10 @@ This project is about making an android application which will help in quickly g
  * Goals<br/>
     - Alert for specific price (Send Notification)
     - Schedule Background service to run at specific interval.
+ * Updates<br/>
+    - Added Jobscheduler which will fetch ticker details every 1 minute.
+    - Added NotificationUtils to show simple notification
+ * Issues<br/>
+    - Notification not visible when called from service.
+    - Need to simplify and sanitize code.
+    - Need Better Design
