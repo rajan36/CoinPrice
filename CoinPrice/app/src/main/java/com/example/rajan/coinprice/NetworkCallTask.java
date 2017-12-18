@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.rajan.coinprice.network.MySingleton;
+import com.example.rajan.coinprice.utilities.NotificationUtils;
 import com.example.rajan.coinprice.utilities.PreferenceUtilities;
 
 import static android.content.ContentValues.TAG;
@@ -26,6 +27,7 @@ public class NetworkCallTask {
         if (action.equals(ACTION_TRIGGER_API_CALL)) {
             Log.d(TAG, "executeTask: Task Execution called");
             volleyCall(context);
+            NotificationUtils.priceAlert(context);
         }
     }
 

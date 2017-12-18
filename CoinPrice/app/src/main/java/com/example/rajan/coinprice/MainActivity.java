@@ -35,6 +35,8 @@ import com.example.rajan.coinprice.data.KoinexCurrentPricesContract;
 import com.example.rajan.coinprice.data.KoinexCurrentPricesHelper;
 import com.example.rajan.coinprice.network.MySingleton;
 import com.example.rajan.coinprice.network.NetworkCallIntentService;
+import com.example.rajan.coinprice.utilities.JobSchedulerUtils;
+import com.example.rajan.coinprice.utilities.NotificationUtils;
 import com.example.rajan.coinprice.utilities.PreferenceUtilities;
 import com.google.gson.Gson;
 
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                NotificationUtils.priceAlert(getApplicationContext());
                 if (isNetworkAvailable()) {
                     showLoading();
                     Intent service = new Intent(getApplicationContext(), NetworkCallIntentService.class);
@@ -135,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
-
+        JobSchedulerUtils.scheduleNetworkCall(this);
     }
 
     private ArrayList<Prices> getAllPricesDB() {
