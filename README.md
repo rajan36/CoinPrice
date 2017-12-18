@@ -46,3 +46,9 @@ This project is about making an android application which will help in quickly g
  #### Day 5, 11 December 2017 9:58 PM<br />
  * Goals<br/>
     - Run Background Service
+ * Updates<br/>
+    - Added background service to fetch ticker data from two apis.
+ #### Day 6, 18 December 2017 9:29 PM <br/>
+ * Goals<br/>
+    - Alert for specific price (Send Notification)
+    - Schedule Background service to run at specific interval.
