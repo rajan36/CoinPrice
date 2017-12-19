@@ -59,3 +59,8 @@ This project is about making an android application which will help in quickly g
     - Notification not visible when called from service.
     - Need to simplify and sanitize code.
     - Need Better Design
+ #### Day 7, 19 December 2017 9:32 PM <br/>
+ * Goals<br/>
+    - Add Settigs Screen to configure interval for refresh.
+    - Move refresh button to menu.
+    - Fill content for Notification
