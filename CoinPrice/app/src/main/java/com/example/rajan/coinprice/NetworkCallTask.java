@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.rajan.coinprice.network.MySingleton;
+import com.example.rajan.coinprice.utilities.DbUtils;
 import com.example.rajan.coinprice.utilities.NotificationUtils;
 import com.example.rajan.coinprice.utilities.PreferenceUtilities;
 
@@ -27,7 +28,7 @@ public class NetworkCallTask {
         if (action.equals(ACTION_TRIGGER_API_CALL)) {
             Log.d(TAG, "executeTask: Task Execution called");
             volleyCall(context);
-            NotificationUtils.dummyNotification(context);
+//            NotificationUtils.dummyNotification(context);
         }
     }
 
@@ -50,6 +51,7 @@ public class NetworkCallTask {
                         PreferenceUtilities.setKoinexJson(context, response);
                         Log.d(TAG, "onResponse: response is " + response);
                         PreferenceUtilities.increaseSuccessRequestCount(context);
+                        DbUtils.insertKoinexTickerRaw(context, response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -71,6 +73,7 @@ public class NetworkCallTask {
                         PreferenceUtilities.setCoinMarketCapJson(context, response);
                         PreferenceUtilities.increaseSuccessRequestCount(context);
                         Log.d(TAG, "onResponse: response is " + response);
+                        DbUtils.insertCoinmarketcapTickerRaw(context, response);
                     }
                 }, new Response.ErrorListener() {
             @Override

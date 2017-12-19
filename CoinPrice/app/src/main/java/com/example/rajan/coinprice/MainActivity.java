@@ -29,9 +29,10 @@ import com.example.rajan.coinprice.Model.CoinMarketCapObject;
 import com.example.rajan.coinprice.Model.Currency;
 import com.example.rajan.coinprice.Model.Prices;
 import com.example.rajan.coinprice.Model.koinexTicker.KoinexTickerObject;
+import com.example.rajan.coinprice.data.CoinPriceDbHelper;
 import com.example.rajan.coinprice.data.KoinexCurrentPricesContract;
-import com.example.rajan.coinprice.data.KoinexCurrentPricesHelper;
 import com.example.rajan.coinprice.network.NetworkCallIntentService;
+import com.example.rajan.coinprice.utilities.DbUtils;
 import com.example.rajan.coinprice.utilities.JobSchedulerUtils;
 import com.example.rajan.coinprice.utilities.NotificationUtils;
 import com.example.rajan.coinprice.utilities.PreferenceUtilities;
@@ -58,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private Button mRefreshButton;
     private Button mTestButton;
     private ProgressBar mLoadingIndicator;
-    private SQLiteDatabase mKoinexdb;
     private MenuItem mRefreshItem;
     private final Gson gson = new Gson();
 
@@ -126,38 +126,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         mRecyclerView.setHasFixedSize(false);
 
-        KoinexCurrentPricesHelper dbHelper = new KoinexCurrentPricesHelper(this);
-        mKoinexdb = dbHelper.getWritableDatabase();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
-        JobSchedulerUtils.scheduleNetworkCall(this);
+//        JobSchedulerUtils.scheduleNetworkCall(this);
+        DbUtils.getAllKoinexTickerRaw(this);
+        DbUtils.getAllCoinMarketcapTickerRaw(this);
     }
 
-    private ArrayList<Prices> getAllPricesDB() {
-        Cursor cursor = mKoinexdb.query(KoinexCurrentPricesContract.KoinexCurrentPrices.TABLE_NAME, null, null, null, null, null, KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_TIMESTAMP);
-        ArrayList<Prices> allPricesData = new ArrayList<>();
-        if (cursor.moveToFirst()) {
-            do {
-                Prices curVal = new Prices();
-                curVal.setBtc(cursor.getDouble(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_BITCOIN)));
-                curVal.setEth(cursor.getDouble(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_ETHEREUM)));
-                curVal.setBch(cursor.getDouble(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_BITCOIN_CASH)));
-                curVal.setXrp(cursor.getDouble(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_RIPPLE)));
-                curVal.setLtc(cursor.getDouble(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_LITECOIN)));
-                curVal.setMiota(cursor.getDouble(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_IOTA)));
-                curVal.setGnt(cursor.getDouble(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_GNT)));
-                curVal.setOmg(cursor.getDouble(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_OMG)));
-                curVal.setId(cursor.getInt(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices._ID)));
-                curVal.setTimestamp(cursor.getString(cursor.getColumnIndex(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_TIMESTAMP)));
-                Log.d(TAG, curVal.toString());
-                allPricesData.add(curVal);
-
-            } while (cursor.moveToNext());
-        }
-
-        return allPricesData;
-    }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -281,18 +257,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    private boolean addPricesDataDB(Prices currentPrice) {
-        ContentValues cv = new ContentValues();
-        cv.put(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_BITCOIN, currentPrice.getBtc());
-        cv.put(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_ETHEREUM, currentPrice.getEth());
-        cv.put(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_BITCOIN_CASH, currentPrice.getBch());
-        cv.put(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_RIPPLE, currentPrice.getXrp());
-        cv.put(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_LITECOIN, currentPrice.getLtc());
-        cv.put(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_IOTA, currentPrice.getMiota());
-        cv.put(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_GNT, currentPrice.getGnt());
-        cv.put(KoinexCurrentPricesContract.KoinexCurrentPrices.COLUMN_NAME_OMG, currentPrice.getOmg());
-        return mKoinexdb.insert(KoinexCurrentPricesContract.KoinexCurrentPrices.TABLE_NAME, null, cv) > 0;
-    }
 
     private void generateUI(KoinexTickerObject koinexTickerObject, ArrayList<CoinMarketCapObject> coinMarketCapObjects) {
         mPriceData = new String[6];
