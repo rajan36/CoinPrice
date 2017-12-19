@@ -65,3 +65,12 @@ This project is about making an android application which will help in quickly g
     - Move refresh button to menu.
     - Save Network response in db.
     - Fill content for Notification
+ * Updates<br/>
+    - Moved Refresh button to menu
+    - Saved raw network response as json in two separate table
+    - Changed content for notification
+    - Settings Screen and Interval for refresh is still to be done.
+    - Notification is visible even if it executes in from scheduler service
+ * Issues <br/>
+    - Price is matched incorrectly for coinmarketcap ticker
+    - Better design needed and need to simplify code
