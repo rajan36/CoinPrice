@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -26,18 +25,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.example.rajan.coinprice.Model.CoinMarketCapObject;
 import com.example.rajan.coinprice.Model.Currency;
 import com.example.rajan.coinprice.Model.Prices;
 import com.example.rajan.coinprice.Model.koinexTicker.KoinexTickerObject;
 import com.example.rajan.coinprice.data.KoinexCurrentPricesContract;
 import com.example.rajan.coinprice.data.KoinexCurrentPricesHelper;
-import com.example.rajan.coinprice.network.MySingleton;
 import com.example.rajan.coinprice.network.NetworkCallIntentService;
 import com.example.rajan.coinprice.utilities.JobSchedulerUtils;
 import com.example.rajan.coinprice.utilities.NotificationUtils;
@@ -46,18 +39,13 @@ import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -93,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NotificationUtils.priceAlert(getApplicationContext());
+                NotificationUtils.dummyNotification(getApplicationContext());
                 if (isNetworkAvailable()) {
                     showLoading();
                     Intent service = new Intent(getApplicationContext(), NetworkCallIntentService.class);

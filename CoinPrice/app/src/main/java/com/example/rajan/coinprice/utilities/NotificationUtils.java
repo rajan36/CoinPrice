@@ -30,6 +30,13 @@ public class NotificationUtils {
         return PendingIntent.getActivity(context, PRICE_ALERT_PENDING_INTENT_ID, startMainActivity, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    public static void dummyNotification(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_notification_icon).setColor(ContextCompat.getColor(context, R.color.colorPrimary)).setContentTitle("Test Title").setContentText("Text body Text").setStyle(new NotificationCompat.BigTextStyle().bigText("Style Text")).setDefaults(Notification.DEFAULT_VIBRATE).setContentIntent(contentIntent(context)).setAutoCancel(true).setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        notificationManager.notify(PRICE_ALERT_NOTIFICATION_ID, notificationBuilder.build());
+
+    }
     public static void priceAlert(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_notification_icon).setColor(ContextCompat.getColor(context, R.color.colorPrimary)).setContentTitle("Test Title").setContentText("Text body Text").setStyle(new NotificationCompat.BigTextStyle().bigText("Style Text")).setDefaults(Notification.DEFAULT_VIBRATE).setContentIntent(contentIntent(context)).setAutoCancel(true).setPriority(NotificationCompat.PRIORITY_HIGH);

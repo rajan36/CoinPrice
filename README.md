@@ -63,4 +63,5 @@ This project is about making an android application which will help in quickly g
  * Goals<br/>
     - Add Settigs Screen to configure interval for refresh.
     - Move refresh button to menu.
+    - Save Network response in db.
     - Fill content for Notification
