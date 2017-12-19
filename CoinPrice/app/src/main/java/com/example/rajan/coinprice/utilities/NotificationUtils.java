@@ -37,9 +37,10 @@ public class NotificationUtils {
         notificationManager.notify(PRICE_ALERT_NOTIFICATION_ID, notificationBuilder.build());
 
     }
-    public static void priceAlert(Context context) {
+
+    public static void simpleNotification(Context context, String title, String body) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_notification_icon).setColor(ContextCompat.getColor(context, R.color.colorPrimary)).setContentTitle("Test Title").setContentText("Text body Text").setStyle(new NotificationCompat.BigTextStyle().bigText("Style Text")).setDefaults(Notification.DEFAULT_VIBRATE).setContentIntent(contentIntent(context)).setAutoCancel(true).setPriority(NotificationCompat.PRIORITY_HIGH);
+        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_notification_icon).setColor(ContextCompat.getColor(context, R.color.colorPrimary)).setContentTitle(title).setContentText(body).setStyle(new NotificationCompat.BigTextStyle().bigText("Style Text")).setDefaults(Notification.DEFAULT_VIBRATE).setContentIntent(contentIntent(context)).setAutoCancel(true).setPriority(NotificationCompat.PRIORITY_HIGH);
 
         notificationManager.notify(PRICE_ALERT_NOTIFICATION_ID, notificationBuilder.build());
 

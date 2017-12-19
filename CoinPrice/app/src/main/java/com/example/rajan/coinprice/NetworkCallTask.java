@@ -28,7 +28,7 @@ public class NetworkCallTask {
         if (action.equals(ACTION_TRIGGER_API_CALL)) {
             Log.d(TAG, "executeTask: Task Execution called");
             volleyCall(context);
-//            NotificationUtils.dummyNotification(context);
+            NotificationUtils.simpleNotification(context, "CoinPrice", "Price Fetched!");
         }
     }
 
