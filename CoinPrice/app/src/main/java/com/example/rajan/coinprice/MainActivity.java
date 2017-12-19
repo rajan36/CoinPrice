@@ -1,5 +1,6 @@
 package com.example.rajan.coinprice;
 
+import android.app.ActivityManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private Button mTestButton;
     private ProgressBar mLoadingIndicator;
     private SQLiteDatabase mKoinexdb;
+    private MenuItem mRefreshItem;
     private final Gson gson = new Gson();
 
     @Override
@@ -83,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mRefreshButton = (Button) findViewById(R.id.refresh_action);
         mTestButton = (Button) findViewById(R.id.test_action);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
+        mRefreshItem = (MenuItem) findViewById(R.id.action_refresh);
 
         mRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,12 +276,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mRecyclerView.setVisibility(View.INVISIBLE);
         mLoadingIndicator.setVisibility(View.VISIBLE);
         mRefreshButton.setEnabled(false);
+        mRefreshItem.setEnabled(false);
     }
 
     private void hideLoading() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mRefreshButton.setEnabled(true);
+        mRefreshItem.setEnabled(true);
     }
 
     private boolean isNetworkAvailable() {
@@ -359,4 +366,48 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         preferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.coinprice_menu, menu);
+        mRefreshItem = menu.findItem(R.id.action_refresh);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_refresh) {
+            if (!isMyServiceRunning(NetworkCallIntentService.class)) {
+                if (isNetworkAvailable()) {
+                    showLoading();
+                    Intent service = new Intent(getApplicationContext(), NetworkCallIntentService.class);
+                    service.setAction(NetworkCallTask.ACTION_TRIGGER_API_CALL);
+                    startService(service);
+                    item.setEnabled(false);
+                    Log.d(TAG, "Fetching ticker details...");
+                } else {
+                    mPriceData = new String[1];
+                    mPriceData[0] = "Empty Data";
+                    CurrencyPriceAdapter adapter = new CurrencyPriceAdapter();
+                    adapter.setPriceData(mPriceData);
+                    mRecyclerView.swapAdapter(adapter, true);
+                    Toast.makeText(getApplicationContext(), "Unable to get data, No Internet Connection...", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Log.d(TAG, "Request is processing...");
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

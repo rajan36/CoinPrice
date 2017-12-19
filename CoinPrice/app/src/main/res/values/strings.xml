@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CoinPrice</string>
+    <string name="string_refresh">Refresh</string>
 </resources>
