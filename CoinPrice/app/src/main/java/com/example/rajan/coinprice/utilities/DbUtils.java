@@ -68,4 +68,24 @@ public final class DbUtils {
             } while (cursor.moveToNext());
         }
     }
+
+    public static String getLatestCoinmarketcapTickerJson(Context context) {
+        mCoinPriceDb = getDbInstance(context);
+        Cursor cursor = mCoinPriceDb.query(
+                CoinmarketcapTickerRawContract.CoinmarketcapTickerRaw.TABLE_NAME, null, null, null, null, null, CoinmarketcapTickerRawContract.CoinmarketcapTickerRaw.COLUMN_TIMESTAMP + " DESC", "1");
+        if (cursor != null) {
+            return cursor.getString(cursor.getColumnIndex(CoinmarketcapTickerRawContract.CoinmarketcapTickerRaw.COLUMN_JSON_DATA));
+        }
+        return null;
+    }
+
+    public static String getLatestKoinexTickerJson(Context context) {
+        mCoinPriceDb = getDbInstance(context);
+        Cursor cursor = mCoinPriceDb.query(
+                KoinexTickerRawContract.KoinexTickerRaw.TABLE_NAME, null, null, null, null, null, KoinexTickerRawContract.KoinexTickerRaw.COLUMN_TIMESTAMP + " DESC", "1");
+        if (cursor != null) {
+            return cursor.getString(cursor.getColumnIndex(KoinexTickerRawContract.KoinexTickerRaw.COLUMN_JSON_DATA));
+        }
+        return null;
+    }
 }

@@ -46,7 +46,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -199,55 +201,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    private class NetworkCall extends AsyncTask<URL, String, String> {
-
-        private String urlInCall;
-
-        @Override
-        protected String doInBackground(URL... params) {
-            URL url;
-            if (params.length == 0) {
-                return null;
-            }
-            url = params[0];
-            urlInCall = url.toString();
-            String result = null;
-            try {
-                result = getResponseFromHttpUrl(url);
-                Log.d(TAG, "Response from the api is " + result);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.d(TAG, "Response from the api is null");
-            }
-
-            return result;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            showLoading();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (s != null) {
-
-            } else {
-                mPriceData = new String[1];
-                mPriceData[0] = "Empty Data";
-                CurrencyPriceAdapter adapter = new CurrencyPriceAdapter();
-                adapter.setPriceData(mPriceData);
-                mRecyclerView.swapAdapter(adapter, true);
-                Toast.makeText(getApplicationContext(), "Error in request...", Toast.LENGTH_SHORT).show();
-                mResultTextView.setText("Error in request...");
-            }
-            hideLoading();
-        }
-
-
-    }
-
     private void showLoading() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mLoadingIndicator.setVisibility(View.VISIBLE);
@@ -284,8 +237,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mRecyclerView.swapAdapter(adapter, true);
     }
 
-    private ArrayList<CoinMarketCapObject> getCoinMarketCapObjects(String json) {
+    private TreeMap<String, CoinMarketCapObject> getCoinMarketCapObjects(String json) {
         ArrayList<CoinMarketCapObject> coinMarketCapObjects = new ArrayList<>();
+        TreeMap<String, CoinMarketCapObject> mapCoinMarketCapObjects = new TreeMap<>();
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(json);
@@ -294,11 +248,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 CoinMarketCapObject object = gson.fromJson(jsonArray.get(i).toString(), CoinMarketCapObject.class);
                 Log.d(TAG, "Response is: " + object.toString());
                 coinMarketCapObjects.add(object);
+                mapCoinMarketCapObjects.put(object.getSymbol(), object);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return coinMarketCapObjects;
+        return mapCoinMarketCapObjects;
     }
 
     private KoinexTickerObject getKoinexTickerObject(String json) {
@@ -309,14 +264,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void generateUI(String koinexJson, String coinMarketCapJson) {
         KoinexTickerObject koinexTickerObject = getKoinexTickerObject(koinexJson);
-        ArrayList<CoinMarketCapObject> coinMarketCapObjects = getCoinMarketCapObjects(coinMarketCapJson);
+        Map<String, CoinMarketCapObject> coinMarketCapObjects = getCoinMarketCapObjects(coinMarketCapJson);
         mPriceData = new String[6];
-        mPriceData[0] = "" + Currency.BITCOIN.name() + "(" + Currency.BITCOIN.getText() + ") : " + koinexTickerObject.getPrices().getBTC() + "  ;  " + coinMarketCapObjects.get(0).getPriceInr();
-        mPriceData[1] = "" + Currency.ETHERIUM.name() + "(" + Currency.ETHERIUM.getText() + ") : " + koinexTickerObject.getPrices().getETH() + "  ;  " + coinMarketCapObjects.get(1).getPriceInr();
-        mPriceData[2] = "" + Currency.BITCOINCASH.name() + "(" + Currency.BITCOINCASH.getText() + ") : " + koinexTickerObject.getPrices().getBCH() + "  ;  " + coinMarketCapObjects.get(2).getPriceInr();
-        mPriceData[3] = "" + Currency.MIOTA.name() + "(" + Currency.MIOTA.getText() + ") : " + koinexTickerObject.getPrices().getMIOTA() + "  ;  " + coinMarketCapObjects.get(3).getPriceInr();
-        mPriceData[4] = "" + Currency.RIPPLE.name() + "(" + Currency.RIPPLE.getText() + ") : " + koinexTickerObject.getPrices().getXRP() + "  ;  " + coinMarketCapObjects.get(4).getPriceInr();
-        mPriceData[5] = "" + Currency.LITECOIN.name() + "(" + Currency.LITECOIN.getText() + ") : " + koinexTickerObject.getPrices().getLTC() + "  ;  " + coinMarketCapObjects.get(5).getPriceInr();
+        mPriceData[0] = "" + Currency.BITCOIN.name() + "(" + Currency.BITCOIN.getText() + ") : " + koinexTickerObject.getPrices().getBTC() + "  ;  " + coinMarketCapObjects.get(Currency.BITCOIN.getText()).getPriceInr();
+        mPriceData[1] = "" + Currency.ETHERIUM.name() + "(" + Currency.ETHERIUM.getText() + ") : " + koinexTickerObject.getPrices().getETH() + "  ;  " + coinMarketCapObjects.get(Currency.ETHERIUM.getText()).getPriceInr();
+        mPriceData[2] = "" + Currency.BITCOINCASH.name() + "(" + Currency.BITCOINCASH.getText() + ") : " + koinexTickerObject.getPrices().getBCH() + "  ;  " + coinMarketCapObjects.get(Currency.BITCOINCASH.getText()).getPriceInr();
+        mPriceData[3] = "" + Currency.MIOTA.name() + "(" + Currency.MIOTA.getText() + ") : " + koinexTickerObject.getPrices().getMIOTA() + "  ;  " + coinMarketCapObjects.get(Currency.MIOTA.getText()).getPriceInr();
+        mPriceData[4] = "" + Currency.RIPPLE.name() + "(" + Currency.RIPPLE.getText() + ") : " + koinexTickerObject.getPrices().getXRP() + "  ;  " + coinMarketCapObjects.get(Currency.RIPPLE.getText()).getPriceInr();
+        mPriceData[5] = "" + Currency.LITECOIN.name() + "(" + Currency.LITECOIN.getText() + ") : " + koinexTickerObject.getPrices().getLTC() + "  ;  " + coinMarketCapObjects.get(Currency.LITECOIN.getText()).getPriceInr();
         Log.d(TAG, "generateUI: Hua kuch");
         CurrencyPriceAdapter adapter = new CurrencyPriceAdapter();
         adapter.setPriceData(mPriceData);
