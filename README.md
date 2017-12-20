@@ -80,3 +80,4 @@ This project is about making an android application which will help in quickly g
     - Map Prices correctly
   * Updates <br/>
     - Added Settings screen and scheduler logic
+    - Corrected logic to map prices to symbol
