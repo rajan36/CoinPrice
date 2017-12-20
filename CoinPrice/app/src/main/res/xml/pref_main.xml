@@ -6,6 +6,7 @@
         android:entryValues="@array/entryvalues_list_refresh_interval"
         android:key="list_refresh_interval"
         android:summary="App will fetch ticker data after %s"
+        android:defaultValue="5"
         android:title="Refresh Interval"
         />
 

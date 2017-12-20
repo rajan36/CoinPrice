@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.Log;
 
+import com.example.rajan.coinprice.utilities.JobSchedulerUtils;
 import com.example.rajan.coinprice.utilities.PreferenceUtilities;
 
 /**
@@ -39,6 +40,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(PreferenceUtilities.KEY_REFRESH_INTERVAL)) {
             Log.d(TAG, "onSharedPreferenceChanged: Refresh interval is" + PreferenceUtilities.getRefreshInterval(getContext()));
+            JobSchedulerUtils.scheduleNetworkCallCustomInterval(getContext());
         }
 
     }

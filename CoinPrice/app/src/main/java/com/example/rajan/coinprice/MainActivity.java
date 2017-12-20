@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         mRecyclerView.setHasFixedSize(false);
 
-//        JobSchedulerUtils.scheduleNetworkCall(this);
+        JobSchedulerUtils.scheduleNetworkCallCustomInterval(this);
         DbUtils.getAllKoinexTickerRaw(this);
         DbUtils.getAllCoinMarketcapTickerRaw(this);
     }
