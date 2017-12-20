@@ -78,3 +78,5 @@ This project is about making an android application which will help in quickly g
   * Goals <br/>
     - Add Settings screen to configure interval for refresh
     - Map Prices correctly
+  * Updates <br/>
+    - Added Settings screen and scheduler logic
