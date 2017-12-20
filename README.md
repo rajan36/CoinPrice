@@ -74,3 +74,7 @@ This project is about making an android application which will help in quickly g
  * Issues <br/>
     - Price is matched incorrectly for coinmarketcap ticker
     - Better design needed and need to simplify code
+ #### Day 8, 20 December 2017 4:56 PM <br/>
+  * Goals <br/>
+    - Add Settings screen to configure interval for refresh
+    - Map Prices correctly
