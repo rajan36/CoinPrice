@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries_list_refresh_interval">
+        <item>1 minute</item>
+        <item>2 minute</item>
+        <item>5 minute</item>
+        <item>10 minute</item>
+        <item>15 minute</item>
+        <item>30 minute</item>
+        <item>1 hour</item>
+        <item>2 hour</item>
+        <item>4 hour</item>
+        <item>8 hour</item>
+    </string-array>
+    <string-array name="entryvalues_list_refresh_interval">
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>480</item>
+        <item>960</item>
+    </string-array>
+</resources>

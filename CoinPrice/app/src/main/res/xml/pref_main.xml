@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:dialogTitle="This is dialog title"
+        android:entries="@array/entries_list_refresh_interval"
+        android:entryValues="@array/entryvalues_list_refresh_interval"
+        android:key="list_refresh_interval"
+        android:summary="App will fetch ticker data after %s"
+        android:title="Refresh Interval"
+        />
+
+</PreferenceScreen>

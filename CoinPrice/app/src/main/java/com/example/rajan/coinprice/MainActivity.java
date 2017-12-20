@@ -126,14 +126,26 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         mRecyclerView.setHasFixedSize(false);
 
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.registerOnSharedPreferenceChangeListener(this);
 //        JobSchedulerUtils.scheduleNetworkCall(this);
         DbUtils.getAllKoinexTickerRaw(this);
         DbUtils.getAllCoinMarketcapTickerRaw(this);
     }
 
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart: Preference Change Listener Regisetered");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: Preference Change Listener Unregistered");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -314,8 +326,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        preferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -349,6 +359,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             } else {
                 Log.d(TAG, "Request is processing...");
             }
+            return true;
+        } else if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

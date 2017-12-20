@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.rajan.coinprice.R;
+
 /**
  * Created by rajan on 12/12/17.
  */
@@ -13,6 +15,7 @@ public final class PreferenceUtilities {
     public static final String KEY_COINMARKETCAP_JSON = "coinmarketcap-ticker";
     public static final String KEY_SUCCESSFUL_REQUEST_COUNT = "success-request-count";
     public static final String KEY_FAILURE_REQUEST_COUNT = "failure-request-count";
+    public static final String KEY_REFRESH_INTERVAL = "list_refresh_interval";
     private static final String DEFAULT_VALUE = "empty";
 
     synchronized public static void setKoinexJson(Context context, String json) {
@@ -75,5 +78,10 @@ public final class PreferenceUtilities {
     public static int getFailureRequestCount(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(KEY_FAILURE_REQUEST_COUNT, 0);
+    }
+
+    public static String getRefreshInterval(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(KEY_REFRESH_INTERVAL, "5");
     }
 }
